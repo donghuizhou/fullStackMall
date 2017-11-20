@@ -1,7 +1,6 @@
 <template>
   <div>
-    i am goodslist的
-    <router-view></router-view>
+    这是标题
   </div>
 </template>
 

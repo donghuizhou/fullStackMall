@@ -1,7 +1,6 @@
 <template>
   <div>
-    i am goodslist的
-    <router-view></router-view>
+    这是图片
   </div>
 </template>
 
