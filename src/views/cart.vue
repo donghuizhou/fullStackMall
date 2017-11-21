@@ -1,10 +1,6 @@
 <template>
   <div>
-    i am goodslist
-    <div>
-      <router-view></router-view>
-    </div>
-    <button>到购物车页面</button>
+    这是购物车页面
   </div>
 </template>
 

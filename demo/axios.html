@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui'>
+    <meta name='screen-orientation' content='portrait'/>
+    <meta name='apple-mobile-web-app-capable' content='yes'>
+    <meta name='format-detection' content='telephone=no'>
+    <meta name='full-screen' content='yes'>
+    <meta name='x5-fullscreen' content='true'>
+    <title>title</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script src="../node_modules/axios/dist/axios.js"></script>
+    <script src=""></script>
+  </head>
+  <body>
+    <div id="app" class="container">
+      <a href="javascript:;" class="btn btn-primary" @click="getPerson">获取人物</a>
+      <a href="javascript:;" class="btn btn-primary" @click="getFoods">获取水果</a>
+      <a href="javascript:;" class="btn btn-primary" @click="getAll">获取人物和水果</a>
+      <div>{{person}}</div>
+      <hr>
+      <div>{{foods}}</div>
+    </div>
+
+    <script>
+      new Vue({
+        el: '#app',
+        data: {
+          person: '',
+          foods: ''
+        },
+        methods: {
+          getPerson (params, headers) {
+            return axios.get('/static/person.json', {
+              params,
+              headers
+            });
+          },
+          getFoods () {
+            return axios.get('/static/foods.json');
+          },
+          getAll () {
+            let params = {
+              name: 'zhou',
+              age: 40
+            }
+            let headers = {
+              token: "NHS676095BSJDBXJ7HS76RTE"
+            }
+            axios.all([this.getPerson(), this.getFoods()])
+              .then(axios.spread((person, foods) => {
+                this.person = person.data
+                this.foods = foods.data
+              }))
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
