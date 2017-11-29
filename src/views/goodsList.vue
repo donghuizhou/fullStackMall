@@ -54,68 +54,68 @@
 <script type='text/ecmascript-6'>
 // import './../assets/css/base.css'
 // import './../assets/css/product.css'
-import "./../assets/css/custom.css";
-import NavHeader from "@/components/navHeader.vue";
-import NavFooter from "@/components/navFooter.vue";
-import NavBread from "@/components/navBread.vue";
-import axios from "axios";
+import './../assets/css/custom.css'
+import NavHeader from '@/components/navHeader.vue'
+import NavFooter from '@/components/navFooter.vue'
+import NavBread from '@/components/navBread.vue'
+import axios from 'axios'
 
 export default {
-  name: "",
-  data() {
+  name: '',
+  data () {
     return {
       goodsList: [],
       priceFilter: [
         {
-          startPrice: "0.00",
-          endPrice: "500.00"
+          startPrice: '0.00',
+          endPrice: '500.00'
         },
         {
-          startPrice: "500.00",
-          endPrice: "1000.00"
+          startPrice: '500.00',
+          endPrice: '1000.00'
         },
         {
-          startPrice: "1000.00",
-          endPrice: "2000.00"
+          startPrice: '1000.00',
+          endPrice: '2000.00'
         }
       ],
-      priceChecked: "all",
+      priceChecked: 'all',
       filterBy: false,
       overLayFlag: false
-    };
+    }
   },
   methods: {
-    getGoodsList() {
+    getGoodsList () {
       axios
-        .get("/static/goods.json", {
+        .get('/static/goods.json', {
           params: {
-            name: "devoe",
+            name: 'devoe',
             age: 20
           },
           headers: {
-            userName: "devoe"
+            userName: 'devoe'
           }
         })
         .then(res => {
-          let result = res.data;
-          this.goodsList = result.result;
-        });
+          let result = res.data
+          this.goodsList = result.result
+        })
     },
-    showFilterPop() {
-      this.filterBy = true;
-      this.overLayFlag = true;
+    showFilterPop () {
+      this.filterBy = true
+      this.overLayFlag = true
     },
-    closePop() {
-      this.filterBy = false;
-      this.overLayFlag = false;
+    closePop () {
+      this.filterBy = false
+      this.overLayFlag = false
     },
-    setPriceFilter(index) {
-      this.priceChecked = index;
-      this.closePop();
+    setPriceFilter (index) {
+      this.priceChecked = index
+      this.closePop()
     }
   },
-  mounted() {
-    this.getGoodsList();
+  mounted () {
+    this.getGoodsList()
   },
   components: {
     NavHeader,
