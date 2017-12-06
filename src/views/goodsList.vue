@@ -28,9 +28,11 @@
           <div class="accessory-list-wrap">
             <div class="accessory-list col-4">
               <ul>
-                <li v-for="item in goodsList" :key="item.productId">
+                <li v-for="item in goodsList.list" :key="item.productId">
                   <div class="pic">
-                    <a href="#"><img v-lazy="'/static/' + item.prodcutImg" alt=""></a>
+                    <a href="#">
+                      <img v-lazy="'/static/' + item.productImage" alt="">
+                    </a>
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
@@ -55,9 +57,9 @@
 // import './../assets/css/base.css'
 // import './../assets/css/product.css'
 import './../assets/css/custom.css'
-import NavHeader from '@/components/navHeader.vue'
-import NavFooter from '@/components/navFooter.vue'
-import NavBread from '@/components/navBread.vue'
+import NavHeader from '@/components/navHeader'
+import NavFooter from '@/components/navFooter'
+import NavBread from '@/components/navBread'
 import axios from 'axios'
 
 export default {
@@ -86,16 +88,7 @@ export default {
   },
   methods: {
     getGoodsList () {
-      axios
-        .get('/static/goods.json', {
-          params: {
-            name: 'devoe',
-            age: 20
-          },
-          headers: {
-            userName: 'devoe'
-          }
-        })
+      axios.get('/goods')
         .then(res => {
           let result = res.data
           this.goodsList = result.result
