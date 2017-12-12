@@ -6,7 +6,8 @@ let productSchema = new Schema({
   "productId":String,
   "productName":String,
   "salePrice":Number,
-  "productImage":String
+  "productImage":String,
+  "productNum": String
 })
 
 // 模型输出

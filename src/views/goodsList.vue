@@ -43,7 +43,7 @@
                     <div class="name">{{item.productName}}</div>
                     <div class="price">{{item.salePrice}}</div>
                     <div class="btn-area">
-                      <a @click="addCart(item.produceId)" href="javascript:;" class="btn btn--m">加入购物车</a>
+                      <a @click="addCart(item.productId)" href="javascript:;" class="btn btn--m">加入购物车</a>
                     </div>
                   </div>
                 </li>
@@ -164,11 +164,15 @@ export default {
       this.closePop()
     },
     addCart (productId) {
+      console.log(productId)
       axios.post('/goods/addCart', {
-        productId
+        productId: productId
       }).then(res => {
         if (res.data.code === 200) {
-          console.log()
+          alert('加入成功')
+          console.log(res.data)
+        } else {
+          alert(res.data.msg)
         }
       })
     }
