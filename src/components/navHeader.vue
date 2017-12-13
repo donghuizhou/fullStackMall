@@ -90,6 +90,7 @@ export default {
     }
   },
   methods: {
+    // 登录
     login () {
       if (!this.userName || !this.userPwd) {
         this.errorTip = true
@@ -110,9 +111,28 @@ export default {
         }
       })
     },
-    logOut () {}
+    // 登出
+    logOut () {
+      axios.post('/users/loginout').then(res => {
+        res = res.data
+        if (res.code === 200) {
+          this.nickName = ''
+        }
+      })
+    },
+    // 检查登录
+    checkLogin () {
+      axios.get('/users/checkLogin').then(res => {
+        res = res.data
+        if (res.code === 200) {
+          this.nickName = res.result
+        }
+      })
+    }
   },
-  mounted () {}
+  mounted () {
+    this.checkLogin()
+  }
 }
 </script>
 

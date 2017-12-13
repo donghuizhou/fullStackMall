@@ -11,7 +11,7 @@
           <a href="javascript:void(0)" class="default cur">Default</a>
           <a href="javascript:void(0)" @click="sortGoods" class="price">
             Price 
-            <svg class="icon icon-arrow-short">
+            <svg class="icon icon-arrow-short" :class="{'sort-up': !sortFlag}">
               <use xlink:href="#icon-arrow-short"></use>
             </svg>
           </a>
@@ -58,7 +58,25 @@
         </div>
       </div>
     </div>
-    <div class="md-overlay" v-show="overLayFlag" @click="closePop"></div>
+    <div class="md-overlay" v-show="overLayFlag" @close="closePop"></div>
+    <modal :mdShow="mdShow" @close="closeModal">
+      <p slot="message">清闲登录，否则无法加入到购物车中</p>
+      <div slot="btnGroup">
+        <a href="javascript:;" class="btn btn--m" @click="mdShow = false">关闭</a>
+      </div>
+    </modal>
+    <modal :mdShow="mdShowCart" @close="closeModal">
+      <p slot="message">
+        <svg class="icon-status-ok">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+        </svg>
+        <span>加入购物车成功</span>
+      </p>
+      <div slot="btnGroup">
+        <a href="javascript:;" class="btn btn--m" @click="mdShowCart = false">继续购物</a>
+        <router-link to="/cart" href="javascript:;" class="btn btn--m">查看购物车</router-link>
+      </div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -71,6 +89,7 @@ import NavHeader from '@/components/navHeader'
 import NavFooter from '@/components/navFooter'
 import NavBread from '@/components/navBread'
 import axios from 'axios'
+import Modal from './../components/Modal.vue'
 
 export default {
   name: '',
@@ -102,10 +121,13 @@ export default {
       page: 1,
       pageSize: 8,
       busy: false,
-      loading: false
+      loading: false,
+      mdShow: false,
+      mdShowCart: false
     }
   },
   methods: {
+    // 获取商品列表
     getGoodsList (flag) {
       this.loading = true
       let param = {
@@ -114,7 +136,7 @@ export default {
         sort: this.sortFlag ? 1 : -1,
         priceLevel: this.priceChecked
       }
-      axios.get('/goods', {
+      axios.get('/goods/list', {
         params: param
         }).then(res => {
           res = res.data
@@ -137,11 +159,13 @@ export default {
           this.loading = false
         })
     },
+    // 排序
     sortGoods () {
       this.sortFlag = !this.sortFlag
       this.page = 1
       this.getGoodsList()
     },
+    // 分页
     loadMore () {
       this.busy = true
       setTimeout(() => {
@@ -149,32 +173,39 @@ export default {
         this.getGoodsList(true)
       }, 500)
     },
+    // 过滤框显示
     showFilterPop () {
       this.filterBy = true
       this.overLayFlag = true
     },
+    // 关闭过滤框
     closePop () {
       this.filterBy = false
       this.overLayFlag = false
     },
+    // 价格筛选
     setPriceFilter (index) {
       this.priceChecked = index
       this.page = 1
       this.getGoodsList()
       this.closePop()
     },
+    // 加入购物车
     addCart (productId) {
       console.log(productId)
       axios.post('/goods/addCart', {
         productId: productId
       }).then(res => {
         if (res.data.code === 200) {
-          alert('加入成功')
-          console.log(res.data)
+          this.mdShowCart = true
         } else {
-          alert(res.data.msg)
+          this.mdShow = true
         }
       })
+    },
+    // 获取modal组件的值
+    closeModal (val) {
+      this.mdShow = false
     }
   },
   mounted () {
@@ -183,7 +214,8 @@ export default {
   components: {
     NavHeader,
     NavFooter,
-    NavBread
+    NavBread,
+    Modal
   }
 };
 </script>
@@ -193,4 +225,7 @@ export default {
   height 100px
   line-height 100px
   text-align center
+.sort-up 
+  transform: rotate(180deg)
+  transition: all 0.3s ease-out
 </style>

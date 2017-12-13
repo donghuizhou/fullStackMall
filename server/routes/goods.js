@@ -20,7 +20,7 @@ mongoose.connection.on('disconnected', () => {
 })
 
 // 查询商品列表数据
-router.get('/', (req, res, next) => {
+router.get('/list', (req, res, next) => {
   let page = parseInt(req.query.page)
   let pageSize = parseInt(req.query.pageSize)
   let priceLevel = req.query.priceLevel

@@ -7,10 +7,6 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.get('/test', function(req, res, next) {
-  res.send('test txt');
-});
-
 // login
 router.post('/login', (req, res, next) => {
   let param = {
@@ -30,6 +26,11 @@ router.post('/login', (req, res, next) => {
           path: '/',
           maxAge: 1000 * 60 * 60 
         })
+        // write cookie
+        res.cookie('userName', userDoc.userName, {
+          path: '/',
+          maxAge: 1000 * 60 * 60 
+        })
         // write session
         // req.session.user = userDoc
         res.json({
@@ -42,6 +43,36 @@ router.post('/login', (req, res, next) => {
       }
     }
   })
+})
+
+// loginout
+router.post('/loginout', (req, res, next) => {
+  // clear cookie
+  res.cookie('userId', '', {
+    path: '/',
+    maxAge: -1
+  })
+  res.json({
+    code: 200,
+    msg: 'loginout success'
+  })
+})
+
+// check
+router.get('/checkLogin', (req, res, next) => {
+  if (req.cookies.userId) {
+    res.json({
+      code: 200,
+      msg: '',
+      result: req.cookies.userName || 'admin'
+    })
+  } else {
+    res.json({
+      code: 501,
+      msg: '未登录',
+      result: ''
+    })
+  }
 })
 
 module.exports = router;
