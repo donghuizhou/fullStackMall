@@ -75,4 +75,120 @@ router.get('/checkLogin', (req, res, next) => {
   }
 })
 
+// 查询当前用户的购物车数据
+router.get('/cartList', (req, res, next) => {
+  let userId = req.cookies.userId
+  User.findOne({userId: userId}, (err, doc) => {
+    if (err) {
+      res.json({
+        code: 501,
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (doc) {
+        res.json({
+          code: 200,
+          msg: '',
+          result: doc.cartList
+        })
+      }
+    }
+  })
+})
+
+// 删除购物车
+router.post('/cartDel', (req, res, next) => {
+  let userId = req.cookies.userId,
+      productId = req.body.productId
+  // mongoose 提供的pull api 来删除数据库    
+  User.update({
+    userId: userId
+  }, {
+    $pull: {
+      'cartList': {
+        'productId': productId
+      }
+    }
+  }, (err, doc) => {
+    if (err) {
+      res.json({
+        code: 501,
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      res.json({
+        code: 200,
+        msg: '',
+        result: 'success'
+      })
+    }
+  })  
+})
+
+// 购物车商品数量的加减
+router.post('/cartEdit', (req, res, next) => {
+  let userId = req.cookies.userId,
+      productId = req.body.productId,
+      productNum = req.body.productNum,
+      checked = req.body.checked
+  User.update({'userId': userId, 'cartList.productId': productId}, {
+    'cartList.$.productNum': productNum,
+    'cartList.$.checked': checked
+  }, (err, doc) => {
+    if (err) {
+      res.json({
+        code: 501,
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (doc) {
+        res.json({
+          code: 200,
+          msg: 'success',
+          result: ''
+        })
+      }
+    }
+  })    
+})
+
+// 购物车的修改
+router.post('/editCheckAll', (req, res, next) => {
+  let userId = req.cookies.userId,
+      checkAll = req.body.checkAll ? '1' : '0'
+  // 批量更新子文档    
+  User.findOne({userId: userId}, (err, user) => {
+    if (err) {
+      res.json({
+        code: 501,
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (user) {
+        user.cartList.forEach(item => {
+          item.checked = checkAll
+        })
+        user.save((err, doc) => {
+          if (err) {
+            res.json({
+              code: 501,
+              msg: err.message,
+              result: ''
+            })
+          } else {
+            res.json({
+              code: 200,
+              msg: 'success',
+              result: ''
+            })
+          }
+        })
+      }
+    }
+  })
+})
 module.exports = router;

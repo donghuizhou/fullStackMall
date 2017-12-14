@@ -7,7 +7,8 @@ let productSchema = new Schema({
   "productName":String,
   "salePrice":Number,
   "productImage":String,
-  "productNum": String
+  "productNum": String,
+  "checked": Number
 })
 
 // 模型输出

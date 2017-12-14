@@ -60,7 +60,7 @@
     </div>
     <div class="md-overlay" v-show="overLayFlag" @close="closePop"></div>
     <modal :mdShow="mdShow" @close="closeModal">
-      <p slot="message">清闲登录，否则无法加入到购物车中</p>
+      <p slot="message">请先登录，否则无法加入到购物车中</p>
       <div slot="btnGroup">
         <a href="javascript:;" class="btn btn--m" @click="mdShow = false">关闭</a>
       </div>
