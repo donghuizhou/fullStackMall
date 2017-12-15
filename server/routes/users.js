@@ -191,4 +191,24 @@ router.post('/editCheckAll', (req, res, next) => {
     }
   })
 })
+
+// 获取收货地址
+router.get('/addressList', (req, res, next) => {
+  let userId = req.cookies.userId
+  User.findOne({userId: userId}, (err, doc) => {
+    if (err) {
+      res.json({
+        code: 501,
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      res.json({
+        code: 200,
+        msg: 'success',
+        result: doc.addressList
+      })
+    }
+  })
+})
 module.exports = router;

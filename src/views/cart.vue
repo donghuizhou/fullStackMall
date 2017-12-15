@@ -141,137 +141,148 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import './../assets/css/checkout.css'
-import './../assets/css/custom.css'
-import NavHeader from '@/components/navHeader'
-import NavFooter from '@/components/navFooter'
-import NavBread from '@/components/navBread'
-import axios from 'axios'
-import Modal from './../components/Modal.vue'
-  export default {
-    name: '',
-    computed: {
-      checkAllFlag () {
-        return this.checkedCount == this.cartList.length
-      },
-      checkedCount () {
-       let num = 0;
-        this.cartList.forEach(item => {
-          if (item.checked == 1) num++;
-        })
-        return num
-      },
-      totalPrice() {
-        let sum = 0;
-        this.cartList.forEach(item => {
-          if (item.checked == 1) {
-            sum += parseFloat(item.salePrice) * parseInt(item.productNum)
-          }
-        })
-        return sum
-      }
+import "./../assets/css/checkout.css";
+import "./../assets/css/custom.css";
+import NavHeader from "@/components/navHeader";
+import NavFooter from "@/components/navFooter";
+import NavBread from "@/components/navBread";
+import axios from "axios";
+import Modal from "./../components/Modal.vue";
+export default {
+  name: "",
+  computed: {
+    checkAllFlag() {
+      return this.checkedCount == this.cartList.length;
     },
-    data () {
-      return {
-        cartList: [],
-        modalConfirm: false,
-        productId: ''
-      }
+    checkedCount() {
+      let num = 0;
+      this.cartList.forEach(item => {
+        if (item.checked == 1) num++;
+      });
+      return num;
     },
-    methods: {
-      // 获取购物车数据
-      init () {
-        axios.get('/users/cartList').then(res => {
-          res = res.data
-          this.cartList = res.result
-        })
-      },
-      toggleCheckAll () {
-        let flag = !this.checkAllFlag
-        this.cartList.forEach(item => {
-          item.checked = flag ? '1' : '0'
-        })
-        axios.post('/users/editCheckAll', {
-          checkAll: flag
-        }).then(res => {
-          res = res.data
-          if (res.code === 200) {
-          }
-        })
-      },
-      checkOut () {},
-      closeModal () {
-        this.modalConfirm = false
-      },
-      delCart () {
-        axios.post('/users/cartDel', {
-          productId: this.productId
-        }).then(res => {
-          res = res.data
-          if (res.code === 200) {
-            this.modalConfirm = false
-            this.init()
-          }
-        })
-      },
-      delCartConfirm (productId) {
-        this.productId = productId
-        this.modalConfirm = true
-      },
-      editCart (flag, item) {
-        if (flag == 'add') {
-          item.productNum++
-        } else if (flag == 'minu') {
-          if (item.productNum <= 1) {
-            return
-          }
-          item.productNum--
-        } else if (flag == 'checked') {
-          item.checked = item.checked == '1' ? '0' : '1' 
+    totalPrice() {
+      let sum = 0;
+      this.cartList.forEach(item => {
+        if (item.checked == 1) {
+          sum += parseFloat(item.salePrice) * parseInt(item.productNum);
         }
-        axios.post('/users/cartEdit', {
+      });
+      return sum;
+    }
+  },
+  data() {
+    return {
+      cartList: [],
+      modalConfirm: false,
+      productId: ""
+    };
+  },
+  methods: {
+    // 获取购物车数据
+    init() {
+      axios.get("/users/cartList").then(res => {
+        res = res.data;
+        this.cartList = res.result;
+      });
+    },
+    toggleCheckAll() {
+      let flag = !this.checkAllFlag;
+      this.cartList.forEach(item => {
+        item.checked = flag ? "1" : "0";
+      });
+      axios
+        .post("/users/editCheckAll", {
+          checkAll: flag
+        })
+        .then(res => {
+          res = res.data;
+          if (res.code === 200) {
+          }
+        });
+    },
+    checkOut() {
+      if (this.checkedCount > 0) {
+        this.$router.push({path: '/address'})
+      }
+    },
+    closeModal() {
+      this.modalConfirm = false;
+    },
+    delCart() {
+      axios
+        .post("/users/cartDel", {
+          productId: this.productId
+        })
+        .then(res => {
+          res = res.data;
+          if (res.code === 200) {
+            this.modalConfirm = false;
+            this.init();
+          }
+        });
+    },
+    delCartConfirm(productId) {
+      this.productId = productId;
+      this.modalConfirm = true;
+    },
+    editCart(flag, item) {
+      if (flag == "add") {
+        item.productNum++;
+      } else if (flag == "minu") {
+        if (item.productNum <= 1) {
+          return;
+        }
+        item.productNum--;
+      } else if (flag == "checked") {
+        item.checked = item.checked == "1" ? "0" : "1";
+      }
+      axios
+        .post("/users/cartEdit", {
           productId: item.productId,
           productNum: item.productNum,
           checked: item.checked
-        }).then(res => {
-          res = res.data
-          
         })
-      }
-    },
-    mounted () {
-      this.init()
-    },
-    components: {
-      NavHeader,
-      NavFooter,
-      NavBread,
-      Modal
+        .then(res => {
+          res = res.data;
+        });
     }
+  },
+  mounted() {
+    this.init();
+  },
+  components: {
+    NavHeader,
+    NavFooter,
+    NavBread,
+    Modal
   }
+};
 </script>
 
 <style lang='stylus' scoped rel='stylesheet/stylus'>
-  .input-sub,.input-add{
-    min-width: 40px;
-    height: 100%;
-    border: 0;
-    color: #605F5F;
-    text-align: center;
-    font-size: 16px;
-    overflow: hidden;
-    display: inline-block;
-    background: #f0f0f0;
-  }
-  .item-quantity .select-self-area{
-    background:none;
-    border: 1px solid #f0f0f0;
-  }
-  .item-quantity .select-self-area .select-ipt{
-    display: inline-block;
-    padding:0 3px;
-    width: 30px;
-    min-width: 30px;
-    text-align: center;
-  }
+.input-sub, .input-add {
+  min-width: 40px;
+  height: 100%;
+  border: 0;
+  color: #605F5F;
+  text-align: center;
+  font-size: 16px;
+  overflow: hidden;
+  display: inline-block;
+  background: #f0f0f0;
+}
+
+.item-quantity .select-self-area {
+  background: none;
+  border: 1px solid #f0f0f0;
+}
+
+.item-quantity .select-self-area .select-ipt {
+  display: inline-block;
+  padding: 0 3px;
+  width: 30px;
+  min-width: 30px;
+  text-align: center;
+}
 </style>
