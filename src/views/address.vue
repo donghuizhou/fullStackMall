@@ -148,7 +148,8 @@ import Modal from "./../components/Modal.vue";
         addressList: [],
         isMdShow: false,
         selectedAddrId: '',
-        checkIndex: 0
+        checkIndex: 0,
+        addressId: ''
       }
     },
     computed: {
@@ -164,8 +165,21 @@ import Modal from "./../components/Modal.vue";
           this.addressList = res.result
         })
       },
-      delAddressConfirm () {},
-      setDefault () {},
+      delAddressConfirm (addressId) {
+        this.addressId = addressId
+        this.isMdShow = true
+      },
+      setDefault (addressId) {
+        axios.post('/users/setDefault', {
+          addressId: addressId
+        }).then(res => {
+          res = res.data
+          if (res.code === 200) {
+            console.log(res.msg)
+            this.init()
+          }
+        })
+      },
       expand () {
         if (this.limit === 3) {
           this.limit = this.addressList.length
@@ -173,8 +187,20 @@ import Modal from "./../components/Modal.vue";
           this.limit = 3
         }
       },
-      delAddress () {},
-      closeModal () {}
+      delAddress () {
+        axios.post('/users/delAddress', {
+          addressId: this.addressId
+        }).then(res => {
+          res = res.data
+          if (res.code === 200) {
+            this.init()
+            this.isMdShow = false
+          }
+        })
+      },
+      closeModal () {
+        this.isMdShow = false
+      }
     },
     mounted () {
       this.init()
