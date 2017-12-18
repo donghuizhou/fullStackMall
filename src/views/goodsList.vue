@@ -198,6 +198,7 @@ export default {
       }).then(res => {
         if (res.data.code === 200) {
           this.mdShowCart = true
+          this.$store.commit('updateCartCount', 1)
         } else {
           this.mdShow = true
         }

@@ -77,6 +77,7 @@
 <script type='text/ecmascript-6'>
 import '../assets/css/login.css'
 import axios from 'axios'
+import { mapState } from 'vuex'
 export default {
   name: '',
   data () {
@@ -84,10 +85,17 @@ export default {
       userName:'admin',
       userPwd:'123456',
       errorTip:false,
-      loginModalFlag:false,
-      nickName: '',
-      cartCount: 10
+      loginModalFlag:false
     }
+  },
+  computed: {
+    ...mapState(['nickName', 'cartCount'])
+    // nickName () {
+    //   return this.$store.state.nickName
+    // },
+    // cartCount () {
+    //   return this.$store.state.cartCount
+    // }
   },
   methods: {
     // 登录
@@ -102,7 +110,7 @@ export default {
       }).then(res => {
         res = res.data
         if (res.code === 200) {
-          this.nickName = res.result.userName
+          this.$store.commit('updateUserInfo', res.result.userName)
           this.errorTip = false
           this.loginModalFlag = false
           // to-do.
@@ -116,7 +124,7 @@ export default {
       axios.post('/users/loginout').then(res => {
         res = res.data
         if (res.code === 200) {
-          this.nickName = ''
+          this.$store.commit('updateUserInfo', '')
         }
       })
     },
@@ -125,13 +133,21 @@ export default {
       axios.get('/users/checkLogin').then(res => {
         res = res.data
         if (res.code === 200) {
-          this.nickName = res.result
+          this.$store.commit('updateUserInfo', res.result)
+          // this.nickName = res.result
         }
+      })
+    },
+    getCartCount () {
+      axios.get('/users/getCartCount').then(res => {
+        res = res.data
+        this.$store.commit('initCartCount', res.result)
       })
     }
   },
   mounted () {
     this.checkLogin()
+    this.getCartCount()
   }
 }
 </script>
